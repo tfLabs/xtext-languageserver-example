@@ -14,8 +14,9 @@ import java.util.function.Function;
 import org.eclipse.lsp4j.jsonrpc.Launcher;
 import org.eclipse.lsp4j.jsonrpc.MessageConsumer;
 import org.eclipse.lsp4j.services.LanguageClient;
-import org.eclipse.xtext.ide.server.LanguageServerImpl;
 import org.eclipse.xtext.ide.server.ServerModule;
+
+import org.xtext.example.mydsl.ide.server.LanguageServerImpl;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
