@@ -11,7 +11,8 @@ import org.xtext.example.mydsl.myDsl.Model
 class MyDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Model model, extension IFormattableDocument document) {
-		for (Greeting greetings : model.getGreetings()) {
+		
+		for (Greeting greetings : model.getGreetingBlock().getGreetings()) {
 			greetings.format;
 		}
 	}

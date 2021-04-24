@@ -3,7 +3,10 @@ grammar org.xtext.example.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
 generate myDsl "http://www.xtext.org/example/mydsl/MyDsl"
 
 Model:
+	greetingBlock=GreetingBlock;
+
+GreetingBlock:
 	greetings+=Greeting*;
-	
+
 Greeting:
 	'Hello' name=ID ('from' from=[Greeting])? '!';

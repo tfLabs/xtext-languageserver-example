@@ -9,6 +9,8 @@ import org.eclipse.xtext.ide.server.commands.IExecutableCommandService;
 import org.eclipse.xtext.ide.server.hover.HoverService;
 import org.xtext.example.mydsl.ide.contentassist.MyDslIdeContentProposalProvider;
 
+import org.xtext.example.mydsl.ide.server.folding.FoldingService;
+
 /**
  * Use this class to register ide components.
  */
@@ -28,5 +30,9 @@ public class MyDslIdeModule extends AbstractMyDslIdeModule {
 	
 	public Class<? extends IdeContentProposalProvider> bindIdeContentProposalProvider() {
 		return MyDslIdeContentProposalProvider.class;
+	}
+	
+	public Class<? extends FoldingService> bindFoldingService() {
+		return FoldingService.class;
 	}
 }

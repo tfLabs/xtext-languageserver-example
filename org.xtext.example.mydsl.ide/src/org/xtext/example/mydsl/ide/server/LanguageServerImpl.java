@@ -142,6 +142,10 @@ import org.xtext.example.mydsl.ide.server.WorkspaceManager;
 import org.xtext.example.mydsl.ide.server.BuildManager.Buildable;
 import org.xtext.example.mydsl.ide.server.findReferences.WorkspaceResourceAccess;
 
+import org.xtext.example.mydsl.ide.server.folding.FoldingService;
+import org.eclipse.lsp4j.FoldingRange;
+import org.eclipse.lsp4j.FoldingRangeRequestParams;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -332,6 +336,7 @@ public class LanguageServerImpl implements LanguageServer, WorkspaceService, Tex
 				capabilitiesContributor.contribute(serverCapabilities, params);
 			}
 		}
+		serverCapabilities.setFoldingRangeProvider(true);
 		return serverCapabilities;
 	}
 
@@ -1235,4 +1240,20 @@ public class LanguageServerImpl implements LanguageServer, WorkspaceService, Tex
 	public RequestManager getRequestManager() {
 		return requestManager;
 	}
+	
+	@Override
+	public CompletableFuture<List<FoldingRange>> foldingRange(FoldingRangeRequestParams params) {
+		return requestManager.runRead((cancelIndicator) -> folding(params, cancelIndicator));
+	}
+	
+	protected List<FoldingRange> folding(FoldingRangeRequestParams params, CancelIndicator cancelIndicator) {
+		URI uri = getURI(params.getTextDocument());
+		FoldingService service = getService(uri, FoldingService.class);
+		if (service == null) {
+			return Collections.emptyList();
+		}
+		return workspaceManager.doRead(uri,
+				(document, resource) -> service.folding(document, resource, params, cancelIndicator));
+	}
+
 }
