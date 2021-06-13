@@ -10,8 +10,15 @@ import org.eclipse.xtext.util.CancelIndicator;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+
+import org.xtext.example.mydsl.ide.server.progress.ProgressExecutor;
 
 public class CommandService implements IExecutableCommandService {
+
+	@Inject
+	private ProgressExecutor progressExecutor;
+
 	@Override
 	public List<String> initialize() {
 		return Lists.newArrayList("mydsl.a", "mydsl.b", "mydsl.c");
@@ -20,10 +27,10 @@ public class CommandService implements IExecutableCommandService {
 	@Override
 	public Object execute(ExecuteCommandParams params, ILanguageServerAccess access, CancelIndicator cancelIndicator) {
 		if ("mydsl.a".equals(params.getCommand())) {
-			String uri = (String) Iterables.getFirst(params.getArguments(), null);
+			String uri = ((com.google.gson.JsonPrimitive)Iterables.getFirst(params.getArguments(), null)).getAsString();
 			if (uri != null) {
 				try {
-					return access.doRead(uri, (ILanguageServerAccess.Context it) -> "Command A").get();
+					return access.doRead(uri, (ILanguageServerAccess.Context it) -> commandA(params, access)).get();
 				} catch (InterruptedException | ExecutionException e) {
 					return e.getMessage();
 				}
@@ -35,4 +42,11 @@ public class CommandService implements IExecutableCommandService {
 		}
 		return "Bad Command";
 	}
+
+	private String commandA(ExecuteCommandParams params, ILanguageServerAccess access) {
+		progressExecutor.execute(params, access);
+		return "Command A";
+	}
+
+
 }
